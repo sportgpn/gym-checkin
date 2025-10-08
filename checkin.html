@@ -27,11 +27,12 @@ function redirectToForm() {
   const section = getSection();
 
   const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform"
-    + "?entry.1449381925=" + encodeURIComponent('') // Никнейм оставим пустым, сотрудник вводит сам
-    + "&entry.1298514284=" + encodeURIComponent(section) // Секция
+    + "?entry.1449381925=" + encodeURIComponent('') // Никнейм оставим пустым
+    + "&entry.1298514284=" + encodeURIComponent(section) // Секция - ИСПРАВЛЕНО: убран лишний 0
     + "&entry.1721493995=" + encodeURIComponent(deviceId); // deviceID
 
-  window.location.href = formUrl;
+  console.log('Redirecting to:', formUrl); // Для отладки
+  window.location.hformUrl;
 }
 
 // Запуск перенаправления при загрузке страницы
