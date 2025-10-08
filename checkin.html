@@ -26,7 +26,7 @@ function redirectToForm() {
   const deviceId = genID();
   const section = getSection();
 
-  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/formResponse"
+  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform"
     + "?entry.1449381925=" + encodeURIComponent('') // Никнейм оставим пустым, сотрудник вводит сам
     + "&entry.1298514284=" + encodeURIComponent(section) // Секция
     + "&entry.1721493995=" + encodeURIComponent(deviceId); // deviceID
