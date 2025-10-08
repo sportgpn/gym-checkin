@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Чек-ин в спортзал</title>
+<script>
+// Генерация уникального deviceID и сохранение в localStorage
+function genID() {
+  let id = localStorage.getItem('device_id');
+  if (!id) {
+    id = 'DEV-' + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem('device_id', id);
+  }
+  return id;
+}
+
+// Получаем секцию из URL, если нет - "unknown"
+function getSection() {
+  const params = new URLSearchParams(window.location.search);
+  const section = params.get('section');
+  return section ? section : 'unknown';
+}
+
+// Перенаправление на Google Form с автозаполнением
+function redirectToForm() {
+  const deviceId = genID();
+  const section = getSection();
+
+  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform"
+    + "?entry.1807815869=" + encodeURIComponent('') // Никнейм оставим пустым, сотрудник вводит сам
+    + "&entry.830912820=" + encodeURIComponent(section) // Секция
+    + "&entry.1858340664=" + encodeURIComponent(deviceId); // deviceID
+
+  window.location.href = formUrl;
+}
+
+// Запуск перенаправления при загрузке страницы
+window.onload = redirectToForm;
+</script>
+</head>
+<body>
+<p>Перенаправляем в форму… ⏳</p>
+</body>
+</html>
