@@ -4,38 +4,39 @@
 <meta charset="UTF-8">
 <title>Чек-ин в спортзал</title>
 <script>
-// Генерация уникального deviceID и сохранение в localStorage
-function genID() {
-  let id = localStorage.getItem('device_id');
-  if (!id) {
-    id = 'DEV-' + Math.random().toString(36).substring(2, 10);
-    localStorage.setItem('device_id', id);
+// === НАСТРОЙКА ===
+const scriptUrl = "https://script.google.com/macros/s/YOUR_WEB_APP_URL_HERE/exec";
+const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform";
+
+// === ГЕНЕРАЦИЯ ТОКЕНА ===
+function getOrCreateToken() {
+  const match = document.cookie.match(/token=([a-zA-Z0-9_-]+)/);
+  if (match) return match[1];
+  const token = Math.random().toString(36).substring(2, 12);
+  document.cookie = `token=${token}; path=/; max-age=31536000`; // 1 год
+  return token;
+}
+
+// === ПОЛУЧЕНИЕ СЕКЦИИ И deviceID ===
+async function initCheckin() {
+  const section = new URLSearchParams(window.location.search).get("section") || "unknown";
+  const token = getOrCreateToken();
+
+  try {
+    const resp = await fetch(`${scriptUrl}?token=${token}`);
+    const data = await resp.json();
+    const deviceID = data.deviceID || "unknown";
+
+    // ВАШИ ID ПОЛЕЙ ФОРМЫ
+    const formUrl = `${formBase}?entry.1449381925=&entry.1298514284=${encodeURIComponent(section)}&entry.1721493995=${encodeURIComponent(deviceID)}`;
+    window.location.href = formUrl;
+  } catch (err) {
+    document.body.innerHTML = `<p>Ошибка соединения. Попробуйте позже.</p>`;
+    console.error(err);
   }
-  return id;
 }
 
-// Получаем секцию из URL, если нет - "unknown"
-function getSection() {
-  const params = new URLSearchParams(window.location.search);
-  const section = params.get('section');
-  return section ? section : 'unknown';
-}
-
-// Перенаправление на Google Form с автозаполнением
-function redirectToForm() {
-  const deviceId = genID();
-  const section = getSection();
-
-  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/formResponse"
-    + "?entry.1449381925=" + encodeURIComponent('') // Никнейм оставим пустым, сотрудник вводит сам
-    + "&entry.1298514284=" + encodeURIComponent(section) // Секция
-    + "&entry.1721493995=" + encodeURIComponent(deviceId); // deviceID
-
-  window.location.href = formUrl;
-}
-
-// Запуск перенаправления при загрузке страницы
-window.onload = redirectToForm;
+window.onload = initCheckin;
 </script>
 </head>
 <body>
