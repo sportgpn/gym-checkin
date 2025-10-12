@@ -23,24 +23,26 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-.step {
-    margin: 10px 0;
-    color: #666;
-}
 </style>
 <script>
 // === НАСТРОЙКА ===
 const scriptUrl = "https://script.google.com/macros/s/AKfycbyj5XEC5_yHHEFfI8yciabymMG1hE5svywehH3iwYsBhWUZdBvuaidvvYNXW7uDk5rJ/exec";
 const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform";
 
-function updateStatus(text) {
-    const status = document.getElementById('status');
-    if (status) status.textContent = text;
+// ЗАРАНЕЕ получаем данные при загрузке страницы
+let deviceData = null;
+
+async function preloadDeviceData() {
+    const token = getOrCreateToken();
+    try {
+        const resp = await fetch(`${scriptUrl}?token=${token}`);
+        deviceData = await resp.json();
+    } catch (err) {
+        console.error('Preload failed:', err);
+    }
 }
 
-// === ГЕНЕРАЦИЯ ТОКЕНА ===
 function getOrCreateToken() {
-    updateStatus("Проверяем токен устройства...");
     const match = document.cookie.match(/token=([a-zA-Z0-9_-]+)/);
     if (match) return match[1];
     const token = Math.random().toString(36).substring(2, 12);
@@ -48,34 +50,28 @@ function getOrCreateToken() {
     return token;
 }
 
-// === ПОЛУЧЕНИЕ СЕКЦИИ И deviceID ===
-async function initCheckin() {
+// Основная функция - мгновенный редирект
+function redirectToForm() {
     const section = new URLSearchParams(window.location.search).get("section") || "unknown";
-    const token = getOrCreateToken();
-
-    try {
-        updateStatus("Получаем ID устройства...");
-        const resp = await fetch(`${scriptUrl}?token=${token}`);
-        const data = await resp.json();
-        const deviceID = data.deviceID || "unknown";
-
-        updateStatus("Перенаправляем в форму...");
-        // ВАШИ ID ПОЛЕЙ ФОРМЫ
-        const formUrl = `${formBase}?entry.1449381925=&entry.1298514284=${encodeURIComponent(section)}&entry.1721493995=${encodeURIComponent(deviceID)}`;
-        window.location.href = formUrl;
-        
-    } catch (err) {
-        document.body.innerHTML = `<p>❌ Ошибка соединения. Попробуйте позже.</p>`;
-        console.error(err);
-    }
+    const deviceID = deviceData?.deviceID || "unknown";
+    
+    const formUrl = `${formBase}?entry.1449381925=&entry.1298514284=${encodeURIComponent(section)}&entry.1721493995=${encodeURIComponent(deviceID)}`;
+    window.location.href = formUrl;
 }
 
-window.onload = initCheckin;
+// Запускаем предзагрузку сразу
+preloadDeviceData();
+
+// Редирект при клике или автоматически через 500мс
+setTimeout(redirectToForm, 500);
+
+// Или по клику для мгновенного действия
+document.body.addEventListener('click', redirectToForm);
 </script>
 </head>
-<body>
+<body style="cursor: pointer;">
     <div class="loader"></div>
-    <p id="status">Перенаправляем в форму… ⏳</p>
-    <p class="step">Шаг 1: Получение данных устройства</p>
+    <p>🔄 Подготовка формы...</p>
+    <p><small>Нажмите в любое место для мгновенного перехода</small></p>
 </body>
 </html>
