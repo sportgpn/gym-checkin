@@ -23,23 +23,36 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.ready {
+    background: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin: 20px;
+}
 </style>
 <script>
 // === НАСТРОЙКА ===
 const scriptUrl = "https://script.google.com/macros/s/AKfycbyj5XEC5_yHHEFfI8yciabymMG1hE5svywehH3iwYsBhWUZdBvuaidvvYNXW7uDk5rJ/exec";
 const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform";
 
-// ЗАРАНЕЕ получаем данные при загрузке страницы
 let deviceData = null;
+let isReady = false;
 
-async function preloadDeviceData() {
-    const token = getOrCreateToken();
-    try {
-        const resp = await fetch(`${scriptUrl}?token=${token}`);
-        deviceData = await resp.json();
-    } catch (err) {
-        console.error('Preload failed:', err);
-    }
+function updateStatus(text) {
+    const status = document.getElementById('status');
+    if (status) status.textContent = text;
+}
+
+function showReadyButton() {
+    const button = document.getElementById('readyButton');
+    const loader = document.getElementById('loader');
+    if (button) button.style.display = 'block';
+    if (loader) loader.style.display = 'none';
+    isReady = true;
 }
 
 function getOrCreateToken() {
@@ -50,28 +63,51 @@ function getOrCreateToken() {
     return token;
 }
 
-// Основная функция - мгновенный редирект
+async function preloadDeviceData() {
+    updateStatus("Получаем ID устройства...");
+    const token = getOrCreateToken();
+    
+    try {
+        const resp = await fetch(`${scriptUrl}?token=${token}`);
+        deviceData = await resp.json();
+        updateStatus("Готово! Нажмите кнопку ниже");
+        showReadyButton();
+    } catch (err) {
+        updateStatus("Ошибка загрузки. Попробуйте снова");
+        console.error('Preload failed:', err);
+    }
+}
+
 function redirectToForm() {
+    if (!deviceData || !isReady) {
+        updateStatus("Данные еще загружаются...");
+        return;
+    }
+    
     const section = new URLSearchParams(window.location.search).get("section") || "unknown";
-    const deviceID = deviceData?.deviceID || "unknown";
+    const deviceID = deviceData.deviceID || "unknown";
     
     const formUrl = `${formBase}?entry.1449381925=&entry.1298514284=${encodeURIComponent(section)}&entry.1721493995=${encodeURIComponent(deviceID)}`;
     window.location.href = formUrl;
 }
 
+// Авто-редирект когда данные готовы (через 2 сек после загрузки)
+setTimeout(() => {
+    if (isReady && deviceData) {
+        redirectToForm();
+    }
+}, 2000);
+
 // Запускаем предзагрузку сразу
-preloadDeviceData();
-
-// Редирект при клике или автоматически через 500мс
-setTimeout(redirectToForm, 500);
-
-// Или по клику для мгновенного действия
-document.body.addEventListener('click', redirectToForm);
+window.onload = preloadDeviceData;
 </script>
 </head>
-<body style="cursor: pointer;">
-    <div class="loader"></div>
-    <p>🔄 Подготовка формы...</p>
-    <p><small>Нажмите в любое место для мгновенного перехода</small></p>
+<body>
+    <div class="loader" id="loader"></div>
+    <p id="status">Подготовка формы... ⏳</p>
+    <button class="ready" id="readyButton" onclick="redirectToForm()" style="display: none;">
+        ✅ Перейти к форме
+    </button>
+    <p><small>Автоматический переход через 2 секунды</small></p>
 </body>
 </html>
