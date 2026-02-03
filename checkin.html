@@ -48,10 +48,9 @@ function getOrCreateToken() {
     return token;
 }
 
-// === ПОЛУЧЕНИЕ СЕКЦИИ И deviceID ===
+// === ПОЛУЧЕНИЕ deviceID (БЕЗ СЕКЦИИ) ===
 async function initCheckin() {
-    const section = new URLSearchParams(window.location.search).get("section") || "unknown";
-    const token = getOrCreateToken();
+    const token = getOrCreateToken(); // Убрал получение section
 
     try {
         updateStatus("Получаем ID устройства...");
@@ -60,8 +59,8 @@ async function initCheckin() {
         const deviceID = data.deviceID || "unknown";
 
         updateStatus("Перенаправляем в форму...");
-        // ВАШИ ID ПОЛЕЙ ФОРМЫ
-        const formUrl = `${formBase}?entry.1449381925=&entry.1298514284=${encodeURIComponent(section)}&entry.1721493995=${encodeURIComponent(deviceID)}`;
+        // ТОЛЬКО deviceID, секция не передаётся
+        const formUrl = `${formBase}?entry.1721493995=${encodeURIComponent(deviceID)}`;
         window.location.href = formUrl;
         
     } catch (err) {
