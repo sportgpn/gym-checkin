@@ -29,39 +29,77 @@ body {
 const scriptUrl = "https://script.google.com/macros/s/AKfycbyj5XEC5_yHHEFfI8yciabymMG1hE5svywehH3iwYsBhWUZdBvuaidvvYNXW7uDk5rJ/exec";
 const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSerXYjr43HlTwdgJDcE53icDd5jVoUQdwWlarxG4ugJbPNxSw/viewform";
 
-// === ОПТИМИЗИРОВАННАЯ ВЕРСИЯ ===
+// === СУПЕР-БЫСТРАЯ ВЕРСИЯ ===
 async function initCheckin() {
-    try {
-        // 1. Токен из куки (синхронно, мгновенно)
-        let token = document.cookie.match(/token=([a-zA-Z0-9_-]+)/)?.[1];
-        if (!token) {
-            token = Math.random().toString(36).substring(2, 12);
-            document.cookie = `token=${token}; path=/; max-age=31536000`;
+    // 1. Сразу проверяем localStorage (мгновенно)
+    const cached = localStorage.getItem('deviceCache');
+    
+    if (cached) {
+        const { deviceID, expires } = JSON.parse(cached);
+        // Кэш валиден 24 часа
+        if (Date.now() < expires) {
+            window.location.href = `${formBase}?entry.1721493995=${encodeURIComponent(deviceID)}`;
+            return; // РЕДИРЕКТ ЗА 0.01 СЕКУНДЫ!
         }
+    }
+    
+    // 2. Быстро получаем/генерируем токен
+    let token = document.cookie.match(/token=([a-zA-Z0-9_-]+)/)?.[1];
+    if (!token) {
+        token = Math.random().toString(36).substring(2, 12);
+        document.cookie = `token=${token}; path=/; max-age=31536000`;
+    }
+    
+    // 3. Показываем форму сразу, параллельно получая deviceID
+    document.getElementById('status').textContent = "Открываем форму...";
+    
+    // 4. Таймаут для Google Apps Script - не ждём больше 2 секунд
+    const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 2000)
+    );
+    
+    try {
+        // Пытаемся быстро получить deviceID
+        const resp = await Promise.race([
+            fetch(`${scriptUrl}?token=${token}`),
+            timeoutPromise
+        ]);
         
-        // 2. Параллельный запрос deviceID (не дожидаясь рендера)
-        const devicePromise = fetch(`${scriptUrl}?token=${token}`);
-        
-        // 3. Минимальный UI
-        document.getElementById('status').textContent = "Загрузка...";
-        
-        // 4. Получаем deviceID
-        const resp = await devicePromise;
         const data = await resp.json();
         const deviceID = data.deviceID || "unknown";
         
-        // 5. Мгновенный редирект
+        // Кэшируем на 24 часа
+        localStorage.setItem('deviceCache', JSON.stringify({
+            deviceID,
+            expires: Date.now() + 24 * 60 * 60 * 1000
+        }));
+        
         window.location.href = `${formBase}?entry.1721493995=${encodeURIComponent(deviceID)}`;
         
     } catch (err) {
-        // Фолбэк: прямая форма без deviceID
-        console.warn("Не удалось получить ID, открываем форму без него");
-        window.location.href = formBase;
+        // Если Google Apps Script медленный или недоступен
+        console.log("Используем быстрый фолбэк");
+        
+        // Генерируем локальный deviceID
+        const localDeviceID = 'LOCAL-' + Math.random().toString(36).substring(2, 10);
+        
+        // Кэшируем локальный ID
+        localStorage.setItem('deviceCache', JSON.stringify({
+            deviceID: localDeviceID,
+            expires: Date.now() + 24 * 60 * 60 * 1000
+        }));
+        
+        // Открываем форму СРАЗУ
+        window.location.href = `${formBase}?entry.1721493995=${encodeURIComponent(localDeviceID)}`;
     }
 }
 
-// Запускаем СРАЗУ при загрузке скрипта
-document.addEventListener('DOMContentLoaded', initCheckin);
+// Запускаем МГНОВЕННО
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCheckin);
+} else {
+    initCheckin(); // Если страница уже загружена
+}
 </script>
 </head>
 <body>
