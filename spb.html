@@ -1,3 +1,196 @@
-<script src="https://forms.yandex.ru/_static/embed.js"></script><iframe
-    src="https://forms.yandex.ru/u/6a915a3e95add565fc67bc5c?iframe=1" frameborder="0"
-    name="ya-form-6a915a3e95add565fc67bc5c" width="650"></iframe>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Запись в спортзал</title>
+    <!-- Подключаем шрифт для красоты (опционально) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Сброс стандартных отступов */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Красивый градиент: от насыщенного синего к светлому голубому */
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 35%, #6ba3d6 100%);
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Белая карточка-контейнер */
+        .container {
+            background-color: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            padding: 30px 25px 35px;
+            max-width: 750px; /* Оптимальная ширина для чтения */
+            width: 100%;
+            transition: all 0.2s ease;
+            /* Легкая голубоватая рамка для акцента */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Заголовок страницы */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eef5ff;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #1a3a6b;
+            font-weight: 700;
+            font-size: 2.0rem;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header h1 span {
+            color: #2a7de1;
+        }
+
+        .header p {
+            color: #4a6a8b;
+            font-weight: 400;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* Стили для контейнера с формой */
+        .form-wrapper {
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: #f8fbff; /* Очень светлый фон для формы */
+            box-shadow: inset 0 2px 4px rgba(0, 20, 40, 0.05);
+        }
+
+        /* Адаптация для iframe */
+        .form-wrapper iframe {
+            display: block;
+            width: 100%;
+            height: 800px; /* Базовая высота, подстроится под содержимое */
+            border: none;
+            transition: height 0.3s ease;
+        }
+
+        /* Подвал */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #5b7fa0;
+            font-size: 0.85rem;
+            border-top: 1px solid #e9f0f8;
+            padding-top: 18px;
+            letter-spacing: 0.3px;
+        }
+
+        .footer a {
+            color: #2a7de1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ======================================== */
+        /* АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
+        /* ======================================== */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+                align-items: flex-start; /* Чтобы карточка не висела по центру, а начиналась сверху */
+                padding-top: 30px;
+            }
+
+            .container {
+                padding: 20px 16px 25px;
+                border-radius: 24px;
+                box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .form-wrapper iframe {
+                height: 700px; /* Чуть меньше на телефонах */
+            }
+
+            .footer {
+                font-size: 0.75rem;
+                padding-top: 15px;
+                margin-top: 20px;
+            }
+        }
+
+        /* Для очень маленьких экранов (до 400px) */
+        @media (max-width: 400px) {
+            .container {
+                padding: 15px 10px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .form-wrapper iframe {
+                height: 620px;
+            }
+        }
+
+        /* Для экранов с высоким разрешением (планшеты, десктопы) */
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 40px 45px;
+            }
+
+            .form-wrapper iframe {
+                height: 850px; /* Немного больше места для формы */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏋️ <span>Gym</span>Check-in</h1>
+            <p>Заполните форму для записи в клуб</p>
+        </div>
+
+        <div class="form-wrapper">
+            <!-- Ваша форма Яндекса -->
+            <iframe
+                src="https://forms.yandex.ru/u/6a915a3e95add565fc67bc5c?iframe=1"
+                frameborder="0"
+                name="ya-form-6a915a3e95add565fc67bc5c"
+                loading="lazy"
+                title="Форма записи в спортзал">
+            </iframe>
+        </div>
+
+        <div class="footer">
+            © 2026 · Все вопросы на <a href="mailto:info@gym-checkin.ru">info@gym-checkin.ru</a>
+        </div>
+    </div>
+</body>
+</html>
