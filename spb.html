@@ -66,12 +66,15 @@
             border-radius: 16px;
             overflow: hidden;
             background-color: #ffffff;
-            min-height: 400px; /* Минимальная высота на время загрузки */
         }
 
-        /* Стили для формы, которую встроит Яндекс */
-        .form-wrapper .ya-form {
-            width: 100% !important;
+        .form-wrapper iframe {
+            display: block;
+            width: 100%;
+            height: 1050px; /* Увеличил ещё больше для нового вопроса */
+            border: none;
+            overflow: hidden;
+            transition: height 0.2s ease;
         }
 
         /* ======================================== */
@@ -97,6 +100,10 @@
             .header p {
                 font-size: 0.9rem;
             }
+
+            .form-wrapper iframe {
+                height: 950px; /* Увеличил для мобильных */
+            }
         }
 
         @media (max-width: 400px) {
@@ -107,11 +114,19 @@
             .header h1 {
                 font-size: 1.3rem;
             }
+
+            .form-wrapper iframe {
+                height: 900px; /* Для маленьких телефонов */
+            }
         }
 
         @media (min-width: 768px) {
             .container {
                 padding: 40px 40px 45px;
+            }
+
+            .form-wrapper iframe {
+                height: 1100px; /* Для десктопов с запасом */
             }
         }
     </style>
@@ -123,38 +138,43 @@
             <p>Заполните форму для записи на занятие</p>
         </div>
 
-        <!-- Контейнер для формы Яндекса -->
-        <div class="form-wrapper" id="ya-form-container"></div>
+        <div class="form-wrapper">
+            <iframe
+                src="https://forms.yandex.ru/u/6a915a3e95add565fc67bc5c?iframe=1"
+                frameborder="0"
+                name="ya-form-6a915a3e95add565fc67bc5c"
+                loading="lazy"
+                title="Форма записи в зал Prama"
+                scrolling="no">
+            </iframe>
+        </div>
     </div>
 
-    <!-- Подключаем скрипт Яндекса -->
-    <script src="https://forms.yandex.ru/_static/embed.js"></script>
     <script>
-        // Функция для рендеринга формы
-        function renderForm() {
-            if (window.YaForms && document.getElementById('ya-form-container')) {
+        function resizeIframe() {
+            const iframe = document.querySelector('.form-wrapper iframe');
+            if (iframe) {
                 try {
-                    YaForms.render({
-                        container: '#ya-form-container',
-                        formId: '6a915a3e95add565fc67bc5c',
-                        // Опционально: можно передать параметры
-                        // params: { some_param: 'value' }
-                    });
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc && iframeDoc.body) {
+                        const height = iframeDoc.body.scrollHeight || iframeDoc.documentElement.scrollHeight;
+                        if (height > 100) {
+                            iframe.style.height = height + 'px';
+                        }
+                    }
                 } catch (e) {
-                    console.error('Ошибка загрузки формы:', e);
+                    // Если доступ запрещен — ничего не делаем, оставляем фиксированную высоту
                 }
-            } else {
-                // Если скрипт ещё не загрузился, пробуем снова через секунду
-                setTimeout(renderForm, 500);
             }
         }
 
-        // Запускаем после загрузки страницы
-        if (document.readyState === 'complete') {
-            renderForm();
-        } else {
-            window.addEventListener('load', renderForm);
-        }
+        window.addEventListener('load', function() {
+            setTimeout(resizeIframe, 500);
+        });
+
+        window.addEventListener('resize', function() {
+            setTimeout(resizeIframe, 300);
+        });
     </script>
 </body>
 </html>
