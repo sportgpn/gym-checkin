@@ -71,10 +71,9 @@
         .form-wrapper iframe {
             display: block;
             width: 100%;
-            height: 1050px; /* Увеличил ещё больше для нового вопроса */
+            height: 1400px; /* Увеличено для десктопа */
             border: none;
             overflow: hidden;
-            transition: height 0.2s ease;
         }
 
         /* ======================================== */
@@ -102,7 +101,7 @@
             }
 
             .form-wrapper iframe {
-                height: 950px; /* Увеличил для мобильных */
+                height: 1300px; /* Сильно увеличено для телефонов — кнопка точно будет видна */
             }
         }
 
@@ -116,7 +115,7 @@
             }
 
             .form-wrapper iframe {
-                height: 900px; /* Для маленьких телефонов */
+                height: 1200px; /* Для маленьких телефонов */
             }
         }
 
@@ -126,7 +125,7 @@
             }
 
             .form-wrapper iframe {
-                height: 1100px; /* Для десктопов с запасом */
+                height: 1500px; /* Для десктопов с запасом */
             }
         }
     </style>
@@ -149,32 +148,5 @@
             </iframe>
         </div>
     </div>
-
-    <script>
-        function resizeIframe() {
-            const iframe = document.querySelector('.form-wrapper iframe');
-            if (iframe) {
-                try {
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc && iframeDoc.body) {
-                        const height = iframeDoc.body.scrollHeight || iframeDoc.documentElement.scrollHeight;
-                        if (height > 100) {
-                            iframe.style.height = height + 'px';
-                        }
-                    }
-                } catch (e) {
-                    // Если доступ запрещен — ничего не делаем, оставляем фиксированную высоту
-                }
-            }
-        }
-
-        window.addEventListener('load', function() {
-            setTimeout(resizeIframe, 500);
-        });
-
-        window.addEventListener('resize', function() {
-            setTimeout(resizeIframe, 300);
-        });
-    </script>
 </body>
 </html>
