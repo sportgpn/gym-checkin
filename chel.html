@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -72,8 +71,7 @@
         .form-wrapper iframe {
             display: block;
             width: 100%;
-            height: 650px;
-            /* Уменьшено, так как форма небольшая */
+            height: 850px; /* Увеличено для десктопа */
             border: none;
             overflow: hidden;
         }
@@ -103,8 +101,7 @@
             }
 
             .form-wrapper iframe {
-                height: 550px;
-                /* Меньше для телефонов */
+                height: 750px; /* Увеличено для телефонов */
             }
         }
 
@@ -118,8 +115,7 @@
             }
 
             .form-wrapper iframe {
-                height: 520px;
-                /* Для маленьких телефонов */
+                height: 700px; /* Для маленьких телефонов */
             }
         }
 
@@ -129,13 +125,11 @@
             }
 
             .form-wrapper iframe {
-                height: 700px;
-                /* Чуть больше на десктопе для комфорта */
+                height: 900px; /* Для десктопов с запасом */
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
@@ -144,12 +138,15 @@
         </div>
 
         <div class="form-wrapper">
-            <iframe src="https://forms.yandex.ru/u/6a947f6802848fbece1defd8?iframe=1" frameborder="0"
-                name="ya-form-6a947f6802848fbece1defd8" loading="lazy" title="Форма записи в зал Челябинск"
+            <iframe
+                src="https://forms.yandex.ru/u/6a947f6802848fbece1defd8?iframe=1"
+                frameborder="0"
+                name="ya-form-6a947f6802848fbece1defd8"
+                loading="lazy"
+                title="Форма записи в зал Челябинск"
                 scrolling="no">
             </iframe>
         </div>
     </div>
 </body>
-
 </html>
