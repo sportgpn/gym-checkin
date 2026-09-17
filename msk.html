@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -72,8 +71,7 @@
         .form-wrapper iframe {
             display: block;
             width: 100%;
-            height: 1200px;
-            /* Большой запас для любых полей */
+            height: 1600px; /* Сильно увеличено для десктопа */
             border: none;
             overflow: hidden;
         }
@@ -103,8 +101,7 @@
             }
 
             .form-wrapper iframe {
-                height: 1100px;
-                /* Для телефонов с запасом */
+                height: 2000px; /* Очень большая высота для Android, чтобы всё влезло */
             }
         }
 
@@ -118,8 +115,7 @@
             }
 
             .form-wrapper iframe {
-                height: 1050px;
-                /* Для маленьких телефонов */
+                height: 2200px; /* Максимальный запас для маленьких Android */
             }
         }
 
@@ -129,13 +125,11 @@
             }
 
             .form-wrapper iframe {
-                height: 1300px;
-                /* Для десктопов с большим запасом */
+                height: 1800px; /* Для десктопов */
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
@@ -144,11 +138,15 @@
         </div>
 
         <div class="form-wrapper">
-            <iframe src="https://forms.yandex.ru/u/6a9479dc068ff0c7babf0c7f?iframe=1" frameborder="0"
-                name="ya-form-6a9479dc068ff0c7babf0c7f" loading="lazy" title="Форма записи в зал Москва" scrolling="no">
+            <iframe
+                src="https://forms.yandex.ru/u/6a9479dc068ff0c7babf0c7f?iframe=1"
+                frameborder="0"
+                name="ya-form-6a9479dc068ff0c7babf0c7f"
+                loading="lazy"
+                title="Форма записи в зал Москва"
+                scrolling="no">
             </iframe>
         </div>
     </div>
 </body>
-
 </html>
